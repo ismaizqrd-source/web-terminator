@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¡Bienvenido! · Terminator V7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07070f; --bg2:#0a0a14; --surface:#0d0d1a; --surface2:#12121f;
+  --neon:#00ffcc; --neon2:#00b8ff; --neon-soft:rgba(0,255,204,.12);
+  --text:#e6edf3; --muted:#737e93; --muted2:#4a5568;
+  --border:rgba(255,255,255,.07); --border-neon:rgba(0,255,204,.22); --green:#10b981;
+  --display:'Space Grotesk',sans-serif; --body:'Inter',sans-serif; --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.6;min-height:100vh;
+  display:flex;align-items:center;justify-content:center;padding:24px;
+  background-image:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(0,184,255,.10),transparent 60%),radial-gradient(ellipse 60% 50% at 80% 20%,rgba(0,255,204,.07),transparent 55%)}
+.card{width:100%;max-width:560px;background:linear-gradient(180deg,var(--surface),var(--bg2));
+  border:1px solid var(--border);border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.head{padding:22px 30px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:11px;
+  background:linear-gradient(180deg,rgba(0,255,204,.06),transparent)}
+.head svg{width:30px;height:30px}
+.head .name{font-family:var(--display);font-weight:700;font-size:1.15rem;letter-spacing:-.5px}
+.body{padding:34px 30px 30px}
+.check{width:62px;height:62px;border-radius:50%;background:rgba(16,185,129,.12);color:#34d399;
+  display:grid;place-items:center;font-size:30px;margin:0 auto 18px}
+h1{font-family:var(--display);font-size:1.7rem;font-weight:700;text-align:center;letter-spacing:-1px}
+.sub{color:var(--muted);text-align:center;margin:10px auto 6px;max-width:430px}
+.mailnote{display:flex;gap:10px;align-items:center;justify-content:center;background:var(--surface2);
+  border:1px solid var(--border-neon);border-radius:12px;padding:13px 16px;margin:22px 0 28px;font-size:.92rem}
+.mailnote b{color:var(--neon)}
+.steps{display:flex;flex-direction:column;gap:2px;margin-bottom:26px}
+.step{display:flex;gap:14px;align-items:flex-start;padding:13px 0;position:relative}
+.step:not(:last-child)::after{content:'';position:absolute;left:15px;top:42px;bottom:-2px;width:1.5px;background:rgba(255,255,255,.08)}
+.num{flex:0 0 31px;height:31px;border-radius:50%;display:grid;place-items:center;font-family:var(--mono);
+  font-size:.85rem;font-weight:600;background:var(--neon-soft);color:var(--neon);border:1px solid var(--border-neon);z-index:1}
+.step .t{font-weight:600;font-size:1rem}
+.step .d{color:var(--muted);font-size:.9rem;margin-top:3px}
+.step .d code{font-family:var(--mono);font-size:.82rem;background:rgba(255,255,255,.05);padding:2px 6px;border-radius:5px;color:#cbd5e1}
+.btn{display:block;width:100%;text-align:center;background:var(--neon);color:#04130d;border:none;border-radius:13px;
+  font-family:var(--body);font-size:1rem;font-weight:700;padding:15px;cursor:pointer;text-decoration:none}
+.btn:hover{opacity:.92}
+.foot{text-align:center;color:var(--muted2);font-size:.8rem;margin-top:20px}
+.foot a{color:var(--muted);text-decoration:underline}
+@media(max-width:480px){.body{padding:26px 20px 24px}h1{font-size:1.4rem}}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="head">
+      <svg viewBox="0 0 100 100"><defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#78ffe1"/><stop offset="1" stop-color="#0096ff"/></linearGradient></defs><rect x="2" y="2" width="96" height="96" rx="23" fill="#0a0a14" stroke="rgba(0,255,204,.4)" stroke-width="2"/><path d="M60 9 L28 54 L47 54 L40 92 L74 45 L55 45 Z" fill="url(#b)"/></svg>
+      <span class="name">Terminator V7</span>
+    </div>
+    <div class="body">
+      <div class="check">✓</div>
+      <h1>¡Pago completado!</h1>
+      <p class="sub">Bienvenido a Terminator V7. Ya puedes empezar a vender en automático.</p>
+
+      <div class="mailnote">📩 Te hemos enviado tu <b>email y contraseña</b> a tu correo. Revisa también la carpeta de <b>spam</b>.</div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <div><div class="t">Revisa tu correo</div><div class="d">Ahí tienes tu email y contraseña de acceso. Los necesitas en el paso 4.</div></div>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <div><div class="t">Descarga la extensión</div><div class="d">Pulsa el botón de abajo para bajar el archivo de la extensión.</div></div>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <div><div class="t">Instálala en Chrome</div><div class="d">Descomprime el ZIP. Entra en <code>chrome://extensions</code>, activa el <b>Modo desarrollador</b> (arriba a la derecha) y pulsa <b>Cargar sin empaquetar</b> → elige la carpeta.</div></div>
+        </div>
+        <div class="step">
+          <div class="num">4</div>
+          <div><div class="t">Conecta tu cuenta de Vinted</div><div class="d">Abre <code>vinted.es</code> con tu sesión iniciada. Abajo a la derecha aparece el panel de Terminator: mete tu <b>email y contraseña</b> (los del correo) y pulsa <b>Conectar</b>. Repite por cada cuenta que quieras conectar.</div></div>
+        </div>
+      </div>
+
+      <a class="btn" id="dl" href="#">⬇ Descargar la extensión</a>
+      <div class="foot">¿Algún problema? Escríbenos a <a href="mailto:soporte@vintedterminator.com">soporte@vintedterminator.com</a></div>
+    </div>
+  </div>
+
+<script>
+  /* ==== EDITA ESTO: enlace de descarga de la extensión (.zip) ==== */
+  var EXTENSION_URL = "https://github.com/ismaizqrd-source/web-terminator/raw/main/TerminatorV7-Conexion.zip";
+  /* =============================================================== */
+  document.getElementById('dl').href = EXTENSION_URL;
+</script>
+</body>
+</html>
