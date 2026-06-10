@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terminator V7 — Vende en Vinted en automático</title>
+<meta name="description" content="Automatiza tus ventas en Vinted: mensajes automáticos, ofertas, resubidas, publicación con IA y estadísticas. Todo desde un panel.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07070f; --bg2:#0a0a14; --surface:#0d0d1a; --surface2:#12121f;
+  --neon:#00ffcc; --neon2:#00b8ff; --neon-soft:rgba(0,255,204,.12);
+  --text:#e6edf3; --muted:#737e93; --muted2:#4a5568;
+  --border:rgba(255,255,255,.07); --border-neon:rgba(0,255,204,.22);
+  --green:#10b981; --pink:#ec4899; --amber:#f59e0b;
+  --display:'Space Grotesk',sans-serif; --body:'Inter',sans-serif; --mono:'JetBrains Mono',monospace;
+  --maxw:1140px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+section{position:relative}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--neon);margin-bottom:14px}
+h2.title{font-family:var(--display);font-size:clamp(1.7rem,4vw,2.6rem);font-weight:700;line-height:1.12;letter-spacing:-1px}
+.lead{color:var(--muted);font-size:1.05rem;max-width:560px;margin-top:14px}
+
+/* ---------- NAV ---------- */
+header{position:sticky;top:0;z-index:100;backdrop-filter:blur(14px);background:rgba(7,7,15,.72);border-bottom:1px solid var(--border)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:66px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:1.12rem;letter-spacing:-.5px}
+.brand svg{width:30px;height:30px}
+.nav-links{display:flex;align-items:center;gap:30px}
+.nav-links a{font-size:.9rem;color:var(--muted);transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-right{display:flex;align-items:center;gap:14px}
+.lang{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;font-family:var(--mono);font-size:.72rem}
+.lang button{background:none;border:none;color:var(--muted);padding:6px 9px;cursor:pointer;font-family:inherit}
+.lang button.active{background:var(--neon-soft);color:var(--neon)}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--body);font-weight:600;font-size:.92rem;border-radius:11px;padding:11px 20px;cursor:pointer;border:none;transition:transform .15s,opacity .15s,box-shadow .2s}
+.btn-primary{background:var(--neon);color:#04130d;box-shadow:0 6px 24px rgba(0,255,204,.18)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 30px rgba(0,255,204,.28)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--border-neon)}
+.burger{display:none;background:none;border:none;color:var(--text);font-size:1.5rem;cursor:pointer}
+
+/* ---------- HERO ---------- */
+.hero{padding:clamp(56px,9vw,110px) 0 80px;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 75% 0%,rgba(0,184,255,.10),transparent 60%),radial-gradient(ellipse 60% 50% at 10% 20%,rgba(0,255,204,.08),transparent 55%);pointer-events:none}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;position:relative}
+.hero h1{font-family:var(--display);font-size:clamp(2.2rem,5.2vw,3.7rem);font-weight:700;line-height:1.04;letter-spacing:-1.8px}
+.hero h1 .grad{background:linear-gradient(110deg,var(--neon),var(--neon2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.sub{color:var(--muted);font-size:1.12rem;margin:22px 0 32px;max-width:500px}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.hero-note{font-family:var(--mono);font-size:.74rem;color:var(--muted2);margin-top:18px}
+
+/* signature: live automation panel */
+.panel{background:linear-gradient(180deg,var(--surface),var(--bg2));border:1px solid var(--border);border-radius:22px;padding:18px;box-shadow:0 30px 80px rgba(0,0,0,.5);position:relative}
+.panel-bar{display:flex;align-items:center;gap:7px;margin-bottom:16px}
+.panel-bar i{width:10px;height:10px;border-radius:50%;background:#2a2a3a;display:inline-block}
+.panel-bar i:nth-child(1){background:#ff5f57}.panel-bar i:nth-child(2){background:#febc2e}.panel-bar i:nth-child(3){background:#28c840}
+.panel-bar span{margin-left:8px;font-family:var(--mono);font-size:.7rem;color:var(--muted2)}
+.item{display:flex;gap:14px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px}
+.item-photo{width:74px;height:74px;border-radius:11px;background:linear-gradient(135deg,#1b1b2e,#101020);display:grid;place-items:center;font-size:2rem;flex:0 0 74px}
+.item-info{flex:1;min-width:0}
+.item-title{font-weight:600;font-size:.95rem}
+.item-meta{font-size:.8rem;color:var(--muted);margin-top:2px}
+.item-price{font-family:var(--display);font-weight:700;color:var(--neon);font-size:1.15rem;margin-top:6px}
+.chip{display:inline-flex;align-items:center;gap:7px;font-size:.82rem;font-weight:600;border-radius:999px;padding:7px 13px;margin-top:14px;background:var(--neon-soft);color:var(--neon);transition:.3s}
+.term{margin-top:16px;background:#050509;border:1px solid var(--border);border-radius:12px;padding:13px 15px;font-family:var(--mono);font-size:.76rem;line-height:1.9;min-height:118px;color:var(--muted)}
+.term .ln{opacity:0;transform:translateY(4px);animation:lineIn .4s forwards}
+.term .ok{color:var(--green)}.term .cy{color:var(--neon)}.term .pk{color:var(--pink)}.term .am{color:var(--amber)}
+@keyframes lineIn{to{opacity:1;transform:none}}
+
+/* ---------- STRIP ---------- */
+.strip{border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2)}
+.strip-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;padding:30px 0}
+.strip-item{text-align:center}
+.strip-num{font-family:var(--display);font-weight:700;font-size:1.7rem;color:var(--text)}
+.strip-lbl{font-size:.8rem;color:var(--muted);margin-top:3px}
+
+/* ---------- FEATURES ---------- */
+.features{padding:90px 0}
+.sec-head{text-align:center;max-width:640px;margin:0 auto 50px}
+.sec-head .lead{margin-left:auto;margin-right:auto}
+.fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.fcard{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:26px 24px;transition:border-color .25s,transform .25s}
+.fcard:hover{border-color:var(--border-neon);transform:translateY(-3px)}
+.fic{width:46px;height:46px;border-radius:12px;background:var(--neon-soft);display:grid;place-items:center;font-size:1.4rem;margin-bottom:16px}
+.fcard h3{font-family:var(--display);font-size:1.12rem;font-weight:600;margin-bottom:8px}
+.fcard p{color:var(--muted);font-size:.92rem}
+
+/* ---------- HOW ---------- */
+.how{padding:90px 0;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:46px}
+.step{position:relative;padding-top:14px}
+.step .n{font-family:var(--mono);font-size:.85rem;color:var(--neon);border:1px solid var(--border-neon);border-radius:8px;width:38px;height:38px;display:grid;place-items:center;margin-bottom:16px}
+.step h3{font-family:var(--display);font-size:1.18rem;font-weight:600;margin-bottom:8px}
+.step p{color:var(--muted);font-size:.93rem}
+
+/* ---------- PRICING ---------- */
+.pricing{padding:90px 0}
+.price-card{max-width:440px;margin:46px auto 0;background:linear-gradient(180deg,var(--surface),var(--bg2));border:1px solid var(--border-neon);border-radius:24px;padding:36px 34px;text-align:center;box-shadow:0 30px 80px rgba(0,255,204,.06)}
+.price-tag{font-family:var(--display);font-size:3.2rem;font-weight:700;letter-spacing:-2px}
+.price-tag span{font-size:1.1rem;color:var(--muted);font-weight:500}
+.price-card .desc{color:var(--muted);margin:6px 0 24px}
+.plist{text-align:left;margin:0 0 26px;display:grid;gap:11px}
+.plist li{list-style:none;display:flex;gap:11px;align-items:flex-start;font-size:.94rem}
+.plist li .tick{color:var(--neon);flex:0 0 auto;margin-top:2px}
+.price-card .btn-primary{width:100%;justify-content:center;padding:15px;font-size:1rem}
+.guarantee{font-family:var(--mono);font-size:.72rem;color:var(--muted2);margin-top:16px}
+
+/* ---------- FAQ ---------- */
+.faq{padding:80px 0 100px;max-width:760px;margin:0 auto}
+.q{border:1px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden;background:var(--surface)}
+.q summary{list-style:none;cursor:pointer;padding:18px 22px;font-weight:600;font-size:1rem;display:flex;justify-content:space-between;align-items:center}
+.q summary::-webkit-details-marker{display:none}
+.q summary::after{content:"+";font-family:var(--mono);color:var(--neon);font-size:1.3rem;transition:transform .2s}
+.q[open] summary::after{transform:rotate(45deg)}
+.q .a{padding:0 22px 20px;color:var(--muted);font-size:.94rem}
+
+/* ---------- CTA + FOOTER ---------- */
+.cta-band{text-align:center;padding:80px 24px;background:radial-gradient(ellipse 60% 100% at 50% 0%,rgba(0,255,204,.1),transparent 60%)}
+.cta-band h2{font-family:var(--display);font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;letter-spacing:-1px}
+.cta-band p{color:var(--muted);margin:14px 0 28px}
+footer{border-top:1px solid var(--border);padding:34px 0;color:var(--muted2);font-size:.85rem}
+.foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:900px){
+  .hero-grid{grid-template-columns:1fr;gap:40px}
+  .fgrid,.steps{grid-template-columns:1fr 1fr}
+  .strip-grid{grid-template-columns:1fr 1fr;gap:26px}
+  .nav-links{display:none}
+  .nav-links.open{display:flex;position:absolute;top:66px;left:0;right:0;flex-direction:column;background:var(--bg2);border-bottom:1px solid var(--border);padding:18px 24px;gap:18px}
+  .burger{display:block}
+}
+@media(max-width:560px){
+  .fgrid,.steps{grid-template-columns:1fr}
+  .hero-cta{flex-direction:column;align-items:stretch}
+  .hero-cta .btn{justify-content:center}
+}
+@media(prefers-reduced-motion:reduce){
+  .term .ln{animation:none;opacity:1;transform:none}
+  .reveal{transition:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGO defs -->
+<svg width="0" height="0" style="position:absolute"><defs>
+  <linearGradient id="bolt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#78ffe1"/><stop offset="1" stop-color="#0096ff"/></linearGradient>
+</defs></svg>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 100 100"><rect x="2" y="2" width="96" height="96" rx="23" fill="#0a0a14" stroke="rgba(0,255,204,.4)" stroke-width="2"/><path d="M60 9 L28 54 L47 54 L40 92 L74 45 L55 45 Z" fill="url(#bolt)"/></svg>
+      Terminator V7
+    </a>
+    <nav class="nav-links" id="navlinks">
+      <a href="#features" data-i18n="nav_features">Funciones</a>
+      <a href="#how" data-i18n="nav_how">Cómo va</a>
+      <a href="#pricing" data-i18n="nav_pricing">Precio</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-right">
+      <div class="lang">
+        <button data-lang="es" class="active">ES</button>
+        <button data-lang="en">EN</button>
+      </div>
+      <a class="btn btn-primary cta-link" data-i18n="nav_cta">Empezar</a>
+      <button class="burger" id="burger" aria-label="menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<a id="top"></a>
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow" data-i18n="hero_eyebrow">Automatización para Vinted</div>
+      <h1 data-i18n="hero_h1">Vende en Vinted <span class="grad">en automático</span>.</h1>
+      <p class="sub" data-i18n="hero_sub">Mensajes a quien da like, ofertas automáticas, resubidas, publicación con IA y estadísticas reales. Tú pones las reglas, el bot hace el trabajo.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary cta-link" data-i18n="hero_cta1">Empezar ahora</a>
+        <a class="btn btn-ghost" href="#how" data-i18n="hero_cta2">Ver cómo funciona</a>
+      </div>
+      <div class="hero-note" data-i18n="hero_note">Conexión segura · sin compartir tu contraseña de Vinted</div>
+    </div>
+
+    <div class="panel reveal">
+      <div class="panel-bar"><i></i><i></i><i></i><span>terminator://winners</span></div>
+      <div class="item">
+        <div class="item-photo">👟</div>
+        <div class="item-info">
+          <div class="item-title">Nike Dunk Low Panda</div>
+          <div class="item-meta" data-i18n="panel_meta">Talla 42 · como nuevo</div>
+          <div class="item-price">64,00 €</div>
+        </div>
+      </div>
+      <div class="chip" id="chip">❤️ <span data-i18n="panel_chip0">Nuevo like detectado</span></div>
+      <div class="term" id="term"></div>
+    </div>
+  </div>
+</section>
+
+<section class="strip">
+  <div class="wrap strip-grid">
+    <div class="strip-item"><div class="strip-num">24/7</div><div class="strip-lbl" data-i18n="strip_1">Trabajando sin parar</div></div>
+    <div class="strip-item"><div class="strip-num">∞</div><div class="strip-lbl" data-i18n="strip_2">Cuentas y artículos</div></div>
+    <div class="strip-item"><div class="strip-num">IA</div><div class="strip-lbl" data-i18n="strip_3">Publicación automática</div></div>
+    <div class="strip-item"><div class="strip-num">0</div><div class="strip-lbl" data-i18n="strip_4">Contraseñas compartidas</div></div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow" data-i18n="feat_eyebrow">Funciones</div>
+      <h2 class="title" data-i18n="feat_title">Todo lo que necesitas para vender más</h2>
+      <p class="lead" data-i18n="feat_lead">Las herramientas de un revendedor profesional, en un solo panel y funcionando solas.</p>
+    </div>
+    <div class="fgrid">
+      <div class="fcard reveal"><div class="fic">🏆</div><h3 data-i18n="f1_t">Winners</h3><p data-i18n="f1_d">Detecta qué artículos se venden rápido para saber qué comprar y publicar.</p></div>
+      <div class="fcard reveal"><div class="fic">⭐</div><h3 data-i18n="f2_t">Mensajes a likes</h3><p data-i18n="f2_d">Cuando alguien guarda tu artículo, le llega tu mensaje con oferta. En automático.</p></div>
+      <div class="fcard reveal"><div class="fic">🤝</div><h3 data-i18n="f3_t">Ofertas automáticas</h3><p data-i18n="f3_d">Acepta, rechaza o contraoferta según tus reglas, y manda mensaje al cerrar.</p></div>
+      <div class="fcard reveal"><div class="fic">📸</div><h3 data-i18n="f4_t">Publicar con IA</h3><p data-i18n="f4_d">Sube las fotos y la IA rellena título, descripción y categoría por ti.</p></div>
+      <div class="fcard reveal"><div class="fic">🔄</div><h3 data-i18n="f5_t">Resubir vendidos</h3><p data-i18n="f5_d">Republica lo que se vende para mantener tu perfil arriba en las búsquedas.</p></div>
+      <div class="fcard reveal"><div class="fic">📩</div><h3 data-i18n="f6_t">Inbox automático</h3><p data-i18n="f6_d">Gestiona conversaciones y responde sin tener que estar delante.</p></div>
+      <div class="fcard reveal"><div class="fic">📊</div><h3 data-i18n="f7_t">Estadísticas y beneficio</h3><p data-i18n="f7_d">Ventas, beneficio, stock y lotes claros en un panel de rentabilidad.</p></div>
+      <div class="fcard reveal"><div class="fic">👥</div><h3 data-i18n="f8_t">Multicuenta</h3><p data-i18n="f8_d">Gestiona varias cuentas de Vinted desde el mismo sitio, sin liarte.</p></div>
+      <div class="fcard reveal"><div class="fic">🔌</div><h3 data-i18n="f9_t">Conexión en 1 clic</h3><p data-i18n="f9_d">Conectas tu cuenta con la extensión en segundos. Sin configuraciones raras.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="how" id="how">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow" data-i18n="how_eyebrow">Cómo funciona</div>
+      <h2 class="title" data-i18n="how_title">Listo en 3 pasos</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><div class="n">01</div><h3 data-i18n="s1_t">Conecta tu cuenta</h3><p data-i18n="s1_d">Instala la extensión, abre Vinted y pulsa Conectar. Tu sesión queda vinculada al panel.</p></div>
+      <div class="step reveal"><div class="n">02</div><h3 data-i18n="s2_t">Configura tus reglas</h3><p data-i18n="s2_d">Precios, plantillas de mensaje, horarios y qué funciones quieres activas.</p></div>
+      <div class="step reveal"><div class="n">03</div><h3 data-i18n="s3_t">Activa y a vender</h3><p data-i18n="s3_d">Enciende el bot y deja que trabaje por ti mientras tú haces otra cosa.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow" data-i18n="price_eyebrow">Precio</div>
+      <h2 class="title" data-i18n="price_title">Un plan, todo incluido</h2>
+    </div>
+    <div class="price-card reveal">
+      <div class="price-tag" id="price-tag">30€<span>/mes</span></div>
+      <div class="desc" data-i18n="price_desc">Acceso completo. Cancela cuando quieras.</div>
+      <ul class="plist">
+        <li><span class="tick">✓</span><span data-i18n="p1">Artículos y cuentas ilimitadas</span></li>
+        <li><span class="tick">✓</span><span data-i18n="p2">Mensajes automáticos a likes</span></li>
+        <li><span class="tick">✓</span><span data-i18n="p3">Ofertas y contraofertas automáticas</span></li>
+        <li><span class="tick">✓</span><span data-i18n="p4">Publicación con IA y resubidas</span></li>
+        <li><span class="tick">✓</span><span data-i18n="p5">Winners y panel de estadísticas</span></li>
+        <li><span class="tick">✓</span><span data-i18n="p6">Soporte directo</span></li>
+      </ul>
+      <a class="btn btn-primary cta-link" data-i18n="price_cta">Empezar ahora</a>
+      <div class="guarantee" data-i18n="price_guarantee">Pago seguro con Stripe</div>
+    </div>
+  </div>
+</section>
+
+<section class="faq" id="faq">
+  <div class="sec-head reveal">
+    <div class="eyebrow">FAQ</div>
+    <h2 class="title" data-i18n="faq_title">Preguntas frecuentes</h2>
+  </div>
+  <details class="q reveal"><summary data-i18n="q1">¿Tengo que dar mi contraseña de Vinted?</summary><div class="a" data-i18n="a1">No. La conexión se hace con las cookies de tu propia sesión a través de la extensión; tu contraseña de Vinted nunca se guarda ni se comparte.</div></details>
+  <details class="q reveal"><summary data-i18n="q2">¿Necesito tener el ordenador encendido?</summary><div class="a" data-i18n="a2">Para conectar la cuenta sí necesitas el navegador. El funcionamiento del bot depende de tu configuración; te lo explicamos al darte acceso.</div></details>
+  <details class="q reveal"><summary data-i18n="q3">¿Funciona con varias cuentas?</summary><div class="a" data-i18n="a3">Sí. Puedes gestionar varias cuentas de Vinted desde el mismo panel.</div></details>
+  <details class="q reveal"><summary data-i18n="q4">¿Puedo cancelar?</summary><div class="a" data-i18n="a4">Sí, cuando quieras desde tu suscripción. Sin permanencia.</div></details>
+  <details class="q reveal"><summary data-i18n="q5">¿Está en español y otros idiomas?</summary><div class="a" data-i18n="a5">El panel y esta web están en español e inglés, y puedes cambiar el idioma cuando quieras.</div></details>
+</section>
+
+<section class="cta-band">
+  <div class="wrap">
+    <h2 data-i18n="cta_h">Deja de perder tiempo gestionando Vinted a mano</h2>
+    <p data-i18n="cta_p">Conéctalo en minutos y empieza a vender en automático.</p>
+    <a class="btn btn-primary cta-link" data-i18n="cta_btn">Empezar ahora</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div class="brand" style="font-size:1rem">
+      <svg viewBox="0 0 100 100" style="width:24px;height:24px"><rect x="2" y="2" width="96" height="96" rx="23" fill="#0a0a14" stroke="rgba(0,255,204,.4)" stroke-width="2"/><path d="M60 9 L28 54 L47 54 L40 92 L74 45 L55 45 Z" fill="url(#bolt)"/></svg>
+      Terminator V7
+    </div>
+    <div data-i18n="footer">© 2026 Terminator V7 · Herramienta independiente, no afiliada a Vinted.</div>
+  </div>
+</footer>
+
+<script>
+/* ====== CONFIG — edita esto ====== */
+var STRIPE_LINK = "https://buy.stripe.com/00w14gfyoaWZ3Wobzyasg02"; // <-- tu link de pago
+var PRICE = "30€"; // <-- precio mostrado
+/* ================================= */
+
+document.querySelectorAll('.cta-link').forEach(function(a){ a.href = STRIPE_LINK; });
+
+/* ----- i18n ----- */
+var I18N = {
+  es:{
+    nav_features:"Funciones",nav_how:"Cómo va",nav_pricing:"Precio",nav_cta:"Empezar",
+    hero_eyebrow:"Automatización para Vinted",
+    hero_h1:'Vende en Vinted <span class="grad">en automático</span>.',
+    hero_sub:"Mensajes a quien da like, ofertas automáticas, resubidas, publicación con IA y estadísticas reales. Tú pones las reglas, el bot hace el trabajo.",
+    hero_cta1:"Empezar ahora",hero_cta2:"Ver cómo funciona",
+    hero_note:"Conexión segura · sin compartir tu contraseña de Vinted",
+    panel_meta:"Talla 42 · como nuevo",panel_chip0:"Nuevo like detectado",
+    strip_1:"Trabajando sin parar",strip_2:"Cuentas y artículos",strip_3:"Publicación automática",strip_4:"Contraseñas compartidas",
+    feat_eyebrow:"Funciones",feat_title:"Todo lo que necesitas para vender más",feat_lead:"Las herramientas de un revendedor profesional, en un solo panel y funcionando solas.",
+    f1_t:"Winners",f1_d:"Detecta qué artículos se venden rápido para saber qué comprar y publicar.",
+    f2_t:"Mensajes a likes",f2_d:"Cuando alguien guarda tu artículo, le llega tu mensaje con oferta. En automático.",
+    f3_t:"Ofertas automáticas",f3_d:"Acepta, rechaza o contraoferta según tus reglas, y manda mensaje al cerrar.",
+    f4_t:"Publicar con IA",f4_d:"Sube las fotos y la IA rellena título, descripción y categoría por ti.",
+    f5_t:"Resubir vendidos",f5_d:"Republica lo que se vende para mantener tu perfil arriba en las búsquedas.",
+    f6_t:"Inbox automático",f6_d:"Gestiona conversaciones y responde sin tener que estar delante.",
+    f7_t:"Estadísticas y beneficio",f7_d:"Ventas, beneficio, stock y lotes claros en un panel de rentabilidad.",
+    f8_t:"Multicuenta",f8_d:"Gestiona varias cuentas de Vinted desde el mismo sitio, sin liarte.",
+    f9_t:"Conexión en 1 clic",f9_d:"Conectas tu cuenta con la extensión en segundos. Sin configuraciones raras.",
+    how_eyebrow:"Cómo funciona",how_title:"Listo en 3 pasos",
+    s1_t:"Conecta tu cuenta",s1_d:"Instala la extensión, abre Vinted y pulsa Conectar. Tu sesión queda vinculada al panel.",
+    s2_t:"Configura tus reglas",s2_d:"Precios, plantillas de mensaje, horarios y qué funciones quieres activas.",
+    s3_t:"Activa y a vender",s3_d:"Enciende el bot y deja que trabaje por ti mientras tú haces otra cosa.",
+    price_eyebrow:"Precio",price_title:"Un plan, todo incluido",price_desc:"Acceso completo. Cancela cuando quieras.",
+    p1:"Artículos y cuentas ilimitadas",p2:"Mensajes automáticos a likes",p3:"Ofertas y contraofertas automáticas",p4:"Publicación con IA y resubidas",p5:"Winners y panel de estadísticas",p6:"Soporte directo",
+    price_cta:"Empezar ahora",price_guarantee:"Pago seguro con Stripe",
+    faq_title:"Preguntas frecuentes",
+    q1:"¿Tengo que dar mi contraseña de Vinted?",a1:"No. La conexión se hace con las cookies de tu propia sesión a través de la extensión; tu contraseña de Vinted nunca se guarda ni se comparte.",
+    q2:"¿Necesito tener el ordenador encendido?",a2:"Para conectar la cuenta sí necesitas el navegador. El funcionamiento del bot depende de tu configuración; te lo explicamos al darte acceso.",
+    q3:"¿Funciona con varias cuentas?",a3:"Sí. Puedes gestionar varias cuentas de Vinted desde el mismo panel.",
+    q4:"¿Puedo cancelar?",a4:"Sí, cuando quieras desde tu suscripción. Sin permanencia.",
+    q5:"¿Está en español y otros idiomas?",a5:"El panel y esta web están en español e inglés, y puedes cambiar el idioma cuando quieras.",
+    cta_h:"Deja de perder tiempo gestionando Vinted a mano",cta_p:"Conéctalo en minutos y empieza a vender en automático.",cta_btn:"Empezar ahora",
+    footer:"© 2026 Terminator V7 · Herramienta independiente, no afiliada a Vinted."
+  },
+  en:{
+    nav_features:"Features",nav_how:"How it works",nav_pricing:"Pricing",nav_cta:"Get started",
+    hero_eyebrow:"Automation for Vinted",
+    hero_h1:'Sell on Vinted <span class="grad">on autopilot</span>.',
+    hero_sub:"Auto-messages to people who like your items, automatic offers, relisting, AI listing and real stats. You set the rules, the bot does the work.",
+    hero_cta1:"Get started",hero_cta2:"See how it works",
+    hero_note:"Secure connection · we never store your Vinted password",
+    panel_meta:"Size 42 · like new",panel_chip0:"New like detected",
+    strip_1:"Always running",strip_2:"Accounts & items",strip_3:"AI listing",strip_4:"Passwords shared",
+    feat_eyebrow:"Features",feat_title:"Everything you need to sell more",feat_lead:"A professional reseller's toolkit, in one panel, running on its own.",
+    f1_t:"Winners",f1_d:"Spot which items sell fast so you know what to buy and list.",
+    f2_t:"Like messages",f2_d:"When someone saves your item, your offer message goes out. Automatically.",
+    f3_t:"Auto offers",f3_d:"Accept, decline or counter based on your rules, and message on close.",
+    f4_t:"AI listing",f4_d:"Upload the photos and AI fills in title, description and category.",
+    f5_t:"Relist sold items",f5_d:"Republish what sells to keep your profile high in search.",
+    f6_t:"Auto inbox",f6_d:"Handle conversations and reply without having to be there.",
+    f7_t:"Stats & profit",f7_d:"Sales, profit, stock and batches clear in one profitability panel.",
+    f8_t:"Multi-account",f8_d:"Manage several Vinted accounts from the same place, no mess.",
+    f9_t:"1-click connect",f9_d:"Connect your account with the extension in seconds. No weird setup.",
+    how_eyebrow:"How it works",how_title:"Ready in 3 steps",
+    s1_t:"Connect your account",s1_d:"Install the extension, open Vinted and hit Connect. Your session links to the panel.",
+    s2_t:"Set your rules",s2_d:"Prices, message templates, schedules and which features you want on.",
+    s3_t:"Turn it on and sell",s3_d:"Switch on the bot and let it work for you while you do something else.",
+    price_eyebrow:"Pricing",price_title:"One plan, all included",price_desc:"Full access. Cancel anytime.",
+    p1:"Unlimited items and accounts",p2:"Automatic messages to likes",p3:"Automatic offers and counters",p4:"AI listing and relisting",p5:"Winners and stats panel",p6:"Direct support",
+    price_cta:"Get started",price_guarantee:"Secure payment with Stripe",
+    faq_title:"Frequently asked questions",
+    q1:"Do I have to give my Vinted password?",a1:"No. The connection uses your own session cookies through the extension; your Vinted password is never stored or shared.",
+    q2:"Do I need my computer on?",a2:"To connect the account you need the browser. How the bot runs depends on your setup; we explain it when you get access.",
+    q3:"Does it work with several accounts?",a3:"Yes. You can manage several Vinted accounts from the same panel.",
+    q4:"Can I cancel?",a4:"Yes, anytime from your subscription. No commitment.",
+    q5:"Is it in English and other languages?",a5:"The panel and this site are in Spanish and English, and you can switch language anytime.",
+    cta_h:"Stop wasting time managing Vinted by hand",cta_p:"Connect it in minutes and start selling on autopilot.",cta_btn:"Get started",
+    footer:"© 2026 Terminator V7 · Independent tool, not affiliated with Vinted."
+  }
+};
+
+function setLang(lang){
+  var dict = I18N[lang]; if(!dict) return;
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var k = el.getAttribute('data-i18n');
+    if(dict[k] != null) el.innerHTML = dict[k];
+  });
+  document.querySelectorAll('.lang button').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-lang')===lang);
+  });
+  buildTerm(lang);
+}
+document.querySelectorAll('.lang button').forEach(function(b){
+  b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang')); });
+});
+
+/* price */
+document.getElementById('price-tag').innerHTML = PRICE + '<span>/mes</span>';
+
+/* burger */
+document.getElementById('burger').addEventListener('click', function(){
+  document.getElementById('navlinks').classList.toggle('open');
+});
+document.querySelectorAll('#navlinks a').forEach(function(a){
+  a.addEventListener('click', function(){ document.getElementById('navlinks').classList.remove('open'); });
+});
+
+/* reveal on scroll */
+var io = new IntersectionObserver(function(es){
+  es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+/* signature: live automation loop */
+var TERM = {
+  es:[
+    {c:'cy',t:'→ Like de @maria_g en "Nike Dunk Low Panda"'},
+    {c:'ok',t:'✓ Mensaje automático enviado'},
+    {c:'am',t:'⟳ Oferta recibida: 58€'},
+    {c:'ok',t:'✓ Contraoferta aceptada: 62€'},
+    {c:'pk',t:'💰 Vendido en 14 min'},
+    {c:'cy',t:'🔄 Artículo resubido automáticamente'}
+  ],
+  en:[
+    {c:'cy',t:'→ Like from @maria_g on "Nike Dunk Low Panda"'},
+    {c:'ok',t:'✓ Auto message sent'},
+    {c:'am',t:'⟳ Offer received: 58€'},
+    {c:'ok',t:'✓ Counter accepted: 62€'},
+    {c:'pk',t:'💰 Sold in 14 min'},
+    {c:'cy',t:'🔄 Item relisted automatically'}
+  ]
+};
+var CHIPS = {
+  es:['❤️ Nuevo like detectado','✉️ Mensaje enviado','🤝 Oferta aceptada','💰 Vendido','🔄 Resubido'],
+  en:['❤️ New like detected','✉️ Message sent','🤝 Offer accepted','💰 Sold','🔄 Relisted']
+};
+var termTimer=null, chipTimer=null;
+function buildTerm(lang){
+  var term=document.getElementById('term'); var chip=document.getElementById('chip');
+  var lines=TERM[lang]||TERM.es; var chips=CHIPS[lang]||CHIPS.es;
+  if(termTimer) clearInterval(termTimer); if(chipTimer) clearInterval(chipTimer);
+  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches){
+    term.innerHTML = lines.map(function(l){return '<div class="ln '+l.c+'" style="opacity:1">'+l.t+'</div>';}).join('');
+    return;
+  }
+  var i=0;
+  function tick(){
+    if(i===0) term.innerHTML='';
+    var l=lines[i%lines.length];
+    var div=document.createElement('div'); div.className='ln '+l.c; div.textContent=l.t;
+    term.appendChild(div);
+    while(term.children.length>4) term.removeChild(term.firstChild);
+    i++;
+    if(i%lines.length===0) setTimeout(function(){ term.innerHTML=''; }, 1400);
+  }
+  tick(); termTimer=setInterval(tick,1600);
+  var ci=0;
+  chipTimer=setInterval(function(){
+    ci=(ci+1)%chips.length; chip.innerHTML=chips[ci];
+  },1600);
+}
+
+setLang('es');
+</script>
+</body>
+</html>
